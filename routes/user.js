@@ -93,7 +93,7 @@ userRouter.put("/", authMiddleware, async (req, res) => {
 function balanceGenerator() {
   return Math.round(Math.random() * 10000) + 1;
 }
-userRouter.get("/bulk",authMiddleware, async (req, res) => {
+userRouter.get("/bulk", authMiddleware, async (req, res) => {
   const filter = req.query.filter || "";
   const id = req.userId;
   const regex = new RegExp(filter, "i");
@@ -102,15 +102,23 @@ userRouter.get("/bulk",authMiddleware, async (req, res) => {
     _id: { $ne: id },
   };
   const usersFound = await User.find(query);
+  const usersWithBalance = await Promise.all(
+    usersFound.map(async (user) => {
+      const userBalance = await balance(user._id); // Await the balance function
+      return {
+        id: user._id,
+        balance: userBalance,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      };
+    })
+  );
+
   res.json({
-    user: usersFound.map((user) => ({
-      id: user._id,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    })),
+    user: usersWithBalance,
   });
-});
+  });
 
 userRouter.get("/me",authMiddleware, async (req, res) => {
   const userId = req.userId;
