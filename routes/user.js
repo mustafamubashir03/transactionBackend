@@ -93,6 +93,10 @@ userRouter.put("/", authMiddleware, async (req, res) => {
 function balanceGenerator() {
   return Math.round(Math.random() * 10000) + 1;
 }
+async function balance(id) {
+  const result = await UserAccount.findById(id);
+  return result.balance;
+}
 userRouter.get("/bulk", authMiddleware, async (req, res) => {
   const filter = req.query.filter || "";
   const id = req.userId;
