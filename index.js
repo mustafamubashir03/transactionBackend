@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 dotenv.config();
 
-app.use(cors({ origin: "https://transaction-frontend-4rez.vercel.app" }));
+app.use(cors({ origin: "https://transaction-frontend-xfdj.vercel.app" }));
 app.use(express.json());
 app.use("/api/v1", mainRouter);
 
